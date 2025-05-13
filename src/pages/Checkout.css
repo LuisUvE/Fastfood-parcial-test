@@ -4,7 +4,17 @@
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  overflow-y: auto;
+  height: 80vh; /* Para permitir el scroll dentro del contenedor */
 }
+
+.loading {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
 
 h1 {
   text-align: center;
