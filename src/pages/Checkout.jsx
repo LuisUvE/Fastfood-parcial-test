@@ -1,89 +1,154 @@
-// src/pages/Checkout.jsx
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // Importamos el contexto del carrito
-import './Checkout.css'; // Aseguramos que estamos importando los estilos
+import React, { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import RecipeCard from "../components/RecipeCard";
+import "./Checkout.css";
 
-const Checkout = () => {
-  const { addToCart } = useCart();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+const PAGE_SIZE = 8;
 
-  // Usamos useMemo para memorizar el arreglo de productos
-  const allProducts = useMemo(() => [
-    { id: 1, name: 'Pizza', description: 'Pizza deliciosa', price: 10, imgSrc: '/images/pizza.jpg' },
-    { id: 2, name: 'Pasta', description: 'Pasta italiana', price: 12, imgSrc: '/images/pasta.jpg' },
-    { id: 3, name: 'Ensalada', description: 'Ensalada fresca', price: 8, imgSrc: '/images/ensalada.jpg' },
-    { id: 4, name: 'Hamburguesa', description: 'Hamburguesa clásica', price: 11, imgSrc: '/images/hamburguesa.jpg' },
-    { id: 5, name: 'Tacos', description: 'Tacos mexicanos', price: 9, imgSrc: '/images/tacos.jpg' },
-    { id: 6, name: 'Sushi', description: 'Sushi fresco', price: 15, imgSrc: '/images/sushi.jpg' },
-    { id: 7, name: 'Paella', description: 'Paella tradicional', price: 20, imgSrc: '/images/paella.jpg' },
-    { id: 8, name: 'Burrito', description: 'Burrito con carne', price: 10, imgSrc: '/images/burrito.jpg' },
-    { id: 9, name: 'Enchiladas', description: 'Enchiladas mexicanas', price: 13, imgSrc: '/images/enchiladas.jpg' },
-    { id: 10, name: 'Ceviche', description: 'Ceviche fresco', price: 12, imgSrc: '/images/ceviche.jpg' },
-    { id: 11, name: 'Sopa', description: 'Sopa casera', price: 7, imgSrc: '/images/sopa.jpg' },
-    { id: 12, name: 'Pizza Vegetariana', description: 'Pizza sin carne', price: 11, imgSrc: '/images/pizza-vegetariana.jpg' },
-    { id: 13, name: 'Pollo Asado', description: 'Pollo al carbón', price: 14, imgSrc: '/images/pollo-asado.jpg' },
-    { id: 14, name: 'Fajitas', description: 'Fajitas de pollo', price: 16, imgSrc: '/images/fajitas.jpg' },
-    { id: 15, name: 'Steak', description: 'Bistec jugoso', price: 18, imgSrc: '/images/steak.jpg' },
-    { id: 16, name: 'Tostadas', description: 'Tostadas mexicanas', price: 9, imgSrc: '/images/tostadas.jpg' },
-    { id: 17, name: 'Lasaña', description: 'Lasaña italiana', price: 14, imgSrc: '/images/lasana.jpg' },
-    { id: 18, name: 'Curry', description: 'Curry picante', price: 15, imgSrc: '/images/curry.jpg' },
-    { id: 19, name: 'Waffles', description: 'Waffles dulces', price: 10, imgSrc: '/images/waffles.jpg' },
-    { id: 20, name: 'Pancakes', description: 'Pancakes con miel', price: 8, imgSrc: '/images/pancakes.jpg' }
-  ], []); // Dependencia vacía para que solo se calcule una vez
+const allRecipes = [
+  {
+    image:
+      "https://images.ctfassets.net/43ibah8kumsy/ea4c468f-30c4-4ad8-b56c-0b090d7ebf62/9d10ed4e561bef13baf0574a7114258a/5pastapennebarilla_upscaled.jpg?w=1600&h=1600&fm=webp&q=50",
+    name: "Penne rigate con longaniza",
+    weight: "420g",
+    price: "7.150",
+    calories: 865,
+    fats: 59,
+    carbs: 58,
+    proteins: 26,
+  },
+  {
+    image:
+      "https://recetasdecocina.elmundo.es/wp-content/uploads/2021/03/IMG_20200321_150823.jpg",
+    name: "Ensalada quinoa y aguacate",
+    weight: "350g",
+    price: "6.500",
+    calories: 420,
+    fats: 20,
+    carbs: 45,
+    proteins: 10,
+  },
+  {
+    image:
+      "https://recetasveganas.net/wp-content/uploads/2020/09/bowl-arroz-hummus-verdura-saludable-vegano-recetas.jpg",
+    name: "Bowl vegano con hummus",
+    weight: "400g",
+    price: "8.000",
+    calories: 520,
+    fats: 22,
+    carbs: 60,
+    proteins: 12,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80",
+    name: "Sushi vegetariano",
+    weight: "300g",
+    price: "9.200",
+    calories: 410,
+    fats: 18,
+    carbs: 50,
+    proteins: 14,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+    name: "Pollo asado con hierbas",
+    weight: "450g",
+    price: "10.000",
+    calories: 780,
+    fats: 40,
+    carbs: 15,
+    proteins: 65,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80",
+    name: "Pasta carbonara tradicional",
+    weight: "400g",
+    price: "8.750",
+    calories: 890,
+    fats: 55,
+    carbs: 65,
+    proteins: 30,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1556911220-e15b29be8c6d?auto=format&fit=crop&w=800&q=80",
+    name: "Ceviche de camarón",
+    weight: "350g",
+    price: "12.500",
+    calories: 350,
+    fats: 10,
+    carbs: 30,
+    proteins: 40,
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=800&q=80",
+    name: "Hamburguesa vegana con aguacate",
+    weight: "380g",
+    price: "9.300",
+    calories: 620,
+    fats: 25,
+    carbs: 70,
+    proteins: 20,
+  },
+];
 
-  // Cargar más productos cuando el usuario haga scroll
-  const loadMoreProducts = () => {
-    if (loading) return;
-    setLoading(true);
+export default function Checkout() {
+  const [items, setItems] = useState(allRecipes.slice(0, PAGE_SIZE));
+  const [page, setPage] = useState(1);
+
+  const fetchMoreData = () => {
+    const nextPage = page + 1;
+    const start = page * PAGE_SIZE;
+    const end = nextPage * PAGE_SIZE;
+    let nextItems = allRecipes.slice(start, end);
+
     setTimeout(() => {
-      setProducts((prevProducts) => [
-        ...prevProducts,
-        ...allProducts, // Añadimos más productos
-      ]);
-      setLoading(false);
-    }, 1000); // Simulamos un pequeño delay al cargar productos
+      if (nextItems.length === 0) {
+        // Repetir los primeros PAGE_SIZE productos si ya no hay más
+        nextItems = allRecipes.slice(0, PAGE_SIZE);
+      }
+      setItems((prev) => [...prev, ...nextItems]);
+      setPage(nextPage);
+    }, 1000);
   };
-
-  // Detectamos cuando el usuario hace scroll al final de la página
-  const handleScroll = (event) => {
-    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
-    if (bottom) {
-      loadMoreProducts(); // Cargar más productos al llegar al fondo
-    }
-  };
-
-  useEffect(() => {
-    setProducts(allProducts.slice(0, 10)); // Cargamos los primeros 10 productos
-  }, [allProducts]); // Ahora solo se ejecutará una vez ya que allProducts está memorizado
 
   return (
-    <div className="checkout-container" onScroll={handleScroll}>
-      <h1>Recetas</h1>
-      <div className="recipe-list">
-        {products.map((recipe) => (
-          <div className="recipe-card" key={recipe.id}>
-            <img
-              src={recipe.imgSrc}
-              alt={recipe.name}
-              className="recipe-img"
-            />
-            <div className="recipe-info">
-              <h2>{recipe.name}</h2>
-              <p>{recipe.description}</p>
-              <p className="price">${recipe.price}</p>
-              <button className="add-to-cart" onClick={() => addToCart(recipe)}>
-                Añadir al carrito
-              </button>
-              <Link to={`/recipe/${recipe.id}`} className="view-detail-link">Ver detalle</Link>
-            </div>
-          </div>
-        ))}
-      </div>
-      {loading && <p className="loading">Cargando más productos...</p>}
-    </div>
-  );
-};
+    <>
+      <h1
+        style={{
+          textAlign: "center",
+          fontSize: "2.5rem",
+          fontWeight: "900",
+          color: "#d35400",
+          marginBottom: "24px",
+          letterSpacing: "0.15em",
+          fontFamily: "'Poppins', sans-serif",
+          userSelect: "none",
+        }}
+      >
+        RECETAS DE RESTAURANTE
+      </h1>
 
-export default Checkout;
+      <InfiniteScroll
+        dataLength={items.length}
+        next={fetchMoreData}
+        hasMore={true} // Siempre true para scroll infinito
+        loader={
+          <p style={{ textAlign: "center", color: "#d35400", fontWeight: "700" }}>
+            Cargando productos...
+          </p>
+        }
+      >
+        <main className="app-container">
+          {items.map((recipe, index) => (
+            <RecipeCard key={index} recipe={recipe} />
+          ))}
+        </main>
+      </InfiniteScroll>
+    </>
+  );
+}

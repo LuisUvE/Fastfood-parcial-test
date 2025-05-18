@@ -1,25 +1,70 @@
-// src/components/RecipeList.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import RecipeCard from './RecipeCard';
 
 const RecipeList = () => {
-  const recipes = [
-    { id: 1, name: 'Receta 1', description: 'Descripción de la receta 1' },
-    { id: 2, name: 'Receta 2', description: 'Descripción de la receta 2' },
-  ]; // Asegúrate de que haya datos para mostrar
+  const [recipes, setRecipes] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [filters, setFilters] = useState({
+    cuisine: '',
+    difficulty: '',
+  });
+
+  useEffect(() => {
+    // Simulación de datos si no tienes API lista:
+    const demoRecipes = [
+      { id: 1, name: "Spaghetti Carbonara", cuisine: "italiana", difficulty: "facil" },
+      { id: 2, name: "Tacos al Pastor", cuisine: "mexicana", difficulty: "media" },
+      { id: 3, name: "Sushi Roll", cuisine: "asiatica", difficulty: "dificil" },
+    ];
+    setRecipes(demoRecipes);
+    setFilteredRecipes(demoRecipes);
+  }, []);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setFilteredRecipes(
+      recipes.filter(recipe =>
+        (name === 'cuisine' ? (value === '' || recipe.cuisine === value) : true) &&
+        (name === 'difficulty' ? (value === '' || recipe.difficulty === value) : true)
+      )
+    );
+  };
 
   return (
-    <div>
+    <div className="container">
       <h1>Lista de Recetas</h1>
-      {recipes.length > 0 ? (
-        recipes.map(recipe => (
-          <div key={recipe.id}>
-            <h2>{recipe.name}</h2>
-            <p>{recipe.description}</p>
-          </div>
-        ))
-      ) : (
-        <p>No hay recetas disponibles.</p>
-      )}
+      <div className="filters">
+        <label>
+          Cocina:
+          <select name="cuisine" value={filters.cuisine} onChange={handleFilterChange}>
+            <option value="">Todas</option>
+            <option value="italiana">Italiana</option>
+            <option value="mexicana">Mexicana</option>
+            <option value="asiatica">Asiática</option>
+          </select>
+        </label>
+        <label>
+          Dificultad:
+          <select name="difficulty" value={filters.difficulty} onChange={handleFilterChange}>
+            <option value="">Todas</option>
+            <option value="facil">Fácil</option>
+            <option value="media">Media</option>
+            <option value="dificil">Difícil</option>
+          </select>
+        </label>
+      </div>
+      <div className="recipe-list">
+        {filteredRecipes.length === 0 ? (
+          <p className="message">No hay recetas que coincidan con el filtro.</p>
+        ) : (
+          filteredRecipes.map(recipe => <RecipeCard key={recipe.id} recipe={recipe} />)
+        )}
+      </div>
     </div>
   );
 };

@@ -1,31 +1,35 @@
-// src/pages/RecipeDetail.jsx
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useCart } from '../context/CartContext'; // Importamos el contexto del carrito
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 
 const RecipeDetail = () => {
-  const { id } = useParams(); // Obtenemos el id de la receta desde la URL
-  const { addToCart } = useCart();
+  const { id } = useParams();
+  const [recipe, setRecipe] = useState(null);
 
-  // Lista de recetas (productos)
-  const recipes = [
-    { id: 1, name: 'Pizza', description: 'Pizza deliciosa', price: 10 },
-    { id: 2, name: 'Pasta', description: 'Pasta italiana', price: 12 },
-    { id: 3, name: 'Ensalada', description: 'Ensalada fresca', price: 8 }
-  ];
+  useEffect(() => {
+    // Simula obtener datos, o usa tu API real
+    const demoRecipe = {
+      id,
+      name: "Spaghetti Carbonara",
+      image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+      ingredients: ["Spaghetti", "Huevos", "Queso Pecorino", "Panceta", "Pimienta negra"],
+      instructions: "Cocer la pasta. Mezclar huevos y queso. Freír panceta. Mezclar todo y servir."
+    };
+    setRecipe(demoRecipe);
+  }, [id]);
 
-  const recipe = recipes.find((r) => r.id === parseInt(id)); // Buscamos la receta por id
-
-  const handleAddToCart = () => {
-    addToCart(recipe);
-  };
+  if (!recipe) return <p className="message">Cargando...</p>;
 
   return (
-    <div>
+    <div className="container">
+      <Link to="/" style={{color: "#ff5722", fontWeight: "600"}}>← Volver a recetas</Link>
       <h1>{recipe.name}</h1>
-      <p>{recipe.description}</p>
-      <p>${recipe.price}</p>
-      <button onClick={handleAddToCart}>Añadir al carrito</button>
+      <img src={recipe.image} alt={recipe.name} style={{width: '100%', borderRadius: '8px', marginBottom: '1rem'}} />
+      <h2>Ingredientes</h2>
+      <ul>
+        {recipe.ingredients.map(ing => <li key={ing}>{ing}</li>)}
+      </ul>
+      <h2>Instrucciones</h2>
+      <p>{recipe.instructions}</p>
     </div>
   );
 };

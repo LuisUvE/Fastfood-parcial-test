@@ -1,100 +1,159 @@
-/* src/pages/Checkout.css */
-.checkout-container {
-  max-width: 1200px;
+/* checkout.css */
+
+/* Contenedor principal con grid para 4 columnas */
+.app-container {
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  overflow-y: auto;
-  height: 80vh; /* Para permitir el scroll dentro del contenedor */
-}
-
-.loading {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: #007bff;
-}
-
-
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 40px;
-  font-size: 2rem;
-}
-
-.recipe-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  padding: 0 12px;
+  justify-items: center;
 }
 
+/* Responsive tablets: 2 columnas */
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsive móviles: 1 columna */
+@media (max-width: 600px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tarjeta receta */
 .recipe-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.3s ease;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  max-width: 320px;
+  padding: 32px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra todo el contenido */
+  gap: 22px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  text-align: center;
 }
 
 .recipe-card:hover {
-  transform: translateY(-10px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px);
 }
 
-.recipe-img {
+/* Imagen receta */
+.recipe-card img.recipe-image {
   width: 100%;
   height: 200px;
+  border-radius: 20px;
   object-fit: cover;
-  border-bottom: 2px solid #f2f2f2;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
 }
 
-.recipe-info {
-  padding: 20px;
+.recipe-card:hover img.recipe-image {
+  transform: scale(1.05);
 }
 
-.recipe-info h2 {
-  color: #007bff;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+/* Título receta: limitar a 2 líneas */
+.recipe-card h3 {
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: #34495e;
+  letter-spacing: 0.06em;
+  display: block;
+  max-height: 3.3rem; /* aprox 2 líneas */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.65rem;
 }
 
-.recipe-info p {
-  font-size: 1rem;
-  color: #555;
+/* Peso receta */
+.recipe-card .weight {
+  font-style: italic;
+  color: #7f8c8d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
 }
 
-.price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #28a745;
-  margin: 10px 0;
+/* Precio */
+.recipe-card .price {
+  font-weight: 900;
+  font-size: 1.7rem;
+  color: #d35400;
+  letter-spacing: 0.12em;
+  user-select: none;
+  margin-bottom: 8px;
 }
 
-.add-to-cart {
-  background-color: #007bff;
+/* Información nutricional */
+.nutrition-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 14px;
+  border-top: 1.5px solid #ecf0f1;
+  color: #34495e;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  gap: 12px;
+}
+
+/* Cada ítem nutricional */
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  user-select: none;
+}
+
+.nutrition-item span.value {
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: #d35400;
+}
+
+.nutrition-item span.label {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  letter-spacing: 0.04em;
+}
+
+/* Iconos nutricionales */
+.nutrition-item img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Botón añadir */
+.recipe-card button {
+  width: 100%;
+  padding: 16px 0;
+  background: linear-gradient(90deg, #e67e22 0%, #f39c12 100%);
   color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
+  font-weight: 900;
+  border-radius: 50px;
+  font-size: 1.3rem;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  border: none;
+  box-shadow: 0 7px 20px rgba(230, 126, 34, 0.6);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+  user-select: none;
+  text-align: center;
 }
 
-.add-to-cart:hover {
-  background-color: #0056b3;
-}
-
-.view-detail-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 1rem;
-  color: #007bff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.view-detail-link:hover {
-  color: #0056b3;
+.recipe-card button:hover {
+  background: linear-gradient(90deg, #f39c12 0%, #e67e22 100%);
+  box-shadow: 0 10px 28px rgba(243, 156, 18, 0.85);
 }

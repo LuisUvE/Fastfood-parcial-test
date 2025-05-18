@@ -1,29 +1,27 @@
-// src/context/CartContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState } from 'react';
 
-// Creamos el contexto para el carrito
-const CartContext = createContext();
+export const CartContext = createContext();
 
-// El proveedor de carrito
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (item) => {
-    setCart((prevCart) => [...prevCart, item]);
-  };
+  const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  const removeFromCart = (itemId) => {
-    setCart(cart.filter((item) => item.id !== itemId));
+  const addToCart = (product) => {
+    setCartItems(prevItems => {
+      const index = prevItems.findIndex(item => item.name === product.name);
+      if (index >= 0) {
+        const newItems = [...prevItems];
+        newItems[index].quantity += 1;
+        return newItems;
+      }
+      return [...prevItems, { ...product, quantity: 1 }];
+    });
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, totalQuantity }}>
       {children}
     </CartContext.Provider>
   );
-};
-
-// Hook personalizado para acceder al carrito
-export const useCart = () => {
-  return useContext(CartContext);
 };
