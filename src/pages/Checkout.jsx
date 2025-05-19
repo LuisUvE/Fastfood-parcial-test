@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import RecipeCard from "../components/RecipeCard";
+import { RequirementsContext } from "../context/RequirementsContext";
+import { CartContext } from "../context/CartContext";
 import "./Checkout.css";
 
 const PAGE_SIZE = 8;
@@ -16,6 +18,7 @@ const allRecipes = [
     fats: 59,
     carbs: 58,
     proteins: 26,
+    cuisine: "italiana",
   },
   {
     image:
@@ -27,6 +30,7 @@ const allRecipes = [
     fats: 20,
     carbs: 45,
     proteins: 10,
+    cuisine: "mexicana",
   },
   {
     image:
@@ -38,6 +42,7 @@ const allRecipes = [
     fats: 22,
     carbs: 60,
     proteins: 12,
+    cuisine: "asiatica",
   },
   {
     image:
@@ -49,10 +54,11 @@ const allRecipes = [
     fats: 18,
     carbs: 50,
     proteins: 14,
+    cuisine: "asiatica",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+      "https://www.demoslavueltaaldia.com/sites/default/files/956_polloverduras_g.png",
     name: "Pollo asado con hierbas",
     weight: "450g",
     price: "10.000",
@@ -60,10 +66,11 @@ const allRecipes = [
     fats: 40,
     carbs: 15,
     proteins: 65,
+    cuisine: "mexicana",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80",
+      "https://theobjective.com/wp-content/uploads/2022/02/carbonara_1.jpg",
     name: "Pasta carbonara tradicional",
     weight: "400g",
     price: "8.750",
@@ -71,10 +78,11 @@ const allRecipes = [
     fats: 55,
     carbs: 65,
     proteins: 30,
+    cuisine: "italiana",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1556911220-e15b29be8c6d?auto=format&fit=crop&w=800&q=80",
+      "https://i0.wp.com/recetaskwa.com/wp-content/uploads/2023/09/ceviche_camaron.jpg?ssl=1",
     name: "Ceviche de camarón",
     weight: "350g",
     price: "12.500",
@@ -82,38 +90,172 @@ const allRecipes = [
     fats: 10,
     carbs: 30,
     proteins: 40,
+    cuisine: "mexicana",
   },
   {
     image:
-      "https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=800&q=80",
-    name: "Hamburguesa vegana con aguacate",
+      "https://tienda.vegusta.cl/wp-content/uploads/2022/03/Dark-Side-Pin%CC%83a-Cuadrada-para-WEB.jpg",
+    name: "Hamburguesa vegana",
     weight: "380g",
     price: "9.300",
     calories: 620,
     fats: 25,
     carbs: 70,
     proteins: 20,
+    cuisine: "mexicana",
+  },
+  // 7 productos adicionales:
+  {
+    image:
+      "https://www.bekiacocina.com/images/cocina/0000/976-h.jpg",
+    name: "Lasagna de verduras",
+    weight: "500g",
+    price: "11.000",
+    calories: 700,
+    fats: 30,
+    carbs: 60,
+    proteins: 25,
+    cuisine: "italiana",
+  },
+  {
+    image:
+      "https://laroussecocina.mx/wp-content/uploads/2020/02/S050419-24-TACOS-VEGETARIANOS-0555-1.jpg.webp",
+    name: "Tacos vegetarianos",
+    weight: "300g",
+    price: "7.800",
+    calories: 480,
+    fats: 18,
+    carbs: 55,
+    proteins: 15,
+    cuisine: "mexicana",
+  },
+  {
+    image:
+      "https://d36fw6y2wq3bat.cloudfront.net/recipes/sopa-de-miso-con-tofu-y-vegetales/900/sopa-de-miso-con-tofu-y-vegetales_version_1687406461.jpg",
+    name: "Sopa miso",
+    weight: "400g",
+    price: "6.200",
+    calories: 300,
+    fats: 10,
+    carbs: 40,
+    proteins: 12,
+    cuisine: "asiatica",
+  },
+  {
+    image:
+      "https://imag.bonviveur.com/ensalada-cesar-casera.jpg",
+    name: "Ensalada César",
+    weight: "350g",
+    price: "7.100",
+    calories: 400,
+    fats: 25,
+    carbs: 35,
+    proteins: 18,
+    cuisine: "italiana",
+  },
+  {
+    image:
+      "https://fedecocina.net/static/aaa48f1f8a7e0773be2404e00d8fef08/a764f/pollo-teriyaki.jpg",
+    name: "Pollo teriyaki",
+    weight: "450g",
+    price: "12.000",
+    calories: 600,
+    fats: 30,
+    carbs: 50,
+    proteins: 40,
+    cuisine: "asiatica",
+  },
+  {
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg",
+    name: "Pizza margarita",
+    weight: "400g",
+    price: "9.000",
+    calories: 750,
+    fats: 35,
+    carbs: 80,
+    proteins: 25,
+    cuisine: "italiana",
+  },
+  {
+    image:
+      "https://okdiario.com/img/2018/04/23/makis-salmon.jpg",
+    name: "Sushi de salmón",
+    weight: "320g",
+    price: "13.000",
+    calories: 500,
+    fats: 20,
+    carbs: 55,
+    proteins: 30,
+    cuisine: "asiatica",
   },
 ];
 
 export default function Checkout() {
-  const [items, setItems] = useState(allRecipes.slice(0, PAGE_SIZE));
+  const { requirements } = useContext(RequirementsContext);
+  const { cartItems, addToCart } = useContext(CartContext);
+
   const [page, setPage] = useState(1);
+  const [filteredRecipes, setFilteredRecipes] = useState(allRecipes);
+  const [cuisineFilter, setCuisineFilter] = useState("");
+  const [textFilter, setTextFilter] = useState("");
+  const [displayedItems, setDisplayedItems] = useState(allRecipes.slice(0, PAGE_SIZE));
+
+  useEffect(() => {
+    let filtered = allRecipes;
+
+    if (cuisineFilter) {
+      filtered = filtered.filter((r) => r.cuisine === cuisineFilter);
+    }
+
+    if (textFilter) {
+      filtered = filtered.filter((r) =>
+        r.name.toLowerCase().includes(textFilter.toLowerCase())
+      );
+    }
+
+    setFilteredRecipes(filtered);
+    setDisplayedItems(filtered.slice(0, PAGE_SIZE));
+    setPage(1);
+  }, [cuisineFilter, textFilter]);
 
   const fetchMoreData = () => {
     const nextPage = page + 1;
     const start = page * PAGE_SIZE;
     const end = nextPage * PAGE_SIZE;
-    let nextItems = allRecipes.slice(start, end);
+    let nextItems = filteredRecipes.slice(start, end);
 
-    setTimeout(() => {
-      if (nextItems.length === 0) {
-        // Repetir los primeros PAGE_SIZE productos si ya no hay más
-        nextItems = allRecipes.slice(0, PAGE_SIZE);
-      }
-      setItems((prev) => [...prev, ...nextItems]);
-      setPage(nextPage);
-    }, 1000);
+    if (nextItems.length === 0) {
+      // Cuando no haya más productos, repetir los primeros PAGE_SIZE para scroll infinito continuo
+      nextItems = filteredRecipes.slice(0, PAGE_SIZE);
+    }
+
+    setDisplayedItems((prev) => [...prev, ...nextItems]);
+    setPage(nextPage);
+  };
+
+  const handleAddToCart = (product) => {
+    const totalCurrent = cartItems.reduce((sum, item) => {
+      const priceNum = parseFloat(item.price.replace(/[^0-9.,]/g, "").replace(",", "."));
+      return sum + (priceNum || 0) * item.quantity;
+    }, 0);
+
+    const productPrice = parseFloat(product.price.replace(/[^0-9.,]/g, "").replace(",", "."));
+
+    if (totalCurrent + productPrice > requirements.presupuesto) {
+      alert("No puedes agregar este producto porque supera tu presupuesto.");
+      return;
+    }
+    addToCart(product);
+  };
+
+  const handleFilterClick = () => {
+    // No hace falta hacer nada, useEffect ya actualiza
+  };
+
+  const handleClearFilters = () => {
+    setCuisineFilter("");
+    setTextFilter("");
   };
 
   return (
@@ -133,22 +275,68 @@ export default function Checkout() {
         RECETAS DE RESTAURANTE
       </h1>
 
-      <InfiniteScroll
-        dataLength={items.length}
-        next={fetchMoreData}
-        hasMore={true} // Siempre true para scroll infinito
-        loader={
-          <p style={{ textAlign: "center", color: "#d35400", fontWeight: "700" }}>
-            Cargando productos...
-          </p>
-        }
+      <section
+        style={{
+          maxWidth: 600,
+          margin: "0 auto 24px",
+          display: "flex",
+          gap: "12px",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
       >
-        <main className="app-container">
-          {items.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} />
-          ))}
-        </main>
-      </InfiniteScroll>
+        <select
+          aria-label="Filtrar por cocina"
+          value={cuisineFilter}
+          onChange={(e) => setCuisineFilter(e.target.value)}
+        >
+          <option value="">Todas las cocinas</option>
+          <option value="italiana">Italiana</option>
+          <option value="mexicana">Mexicana</option>
+          <option value="asiatica">Asiática</option>
+        </select>
+
+        <input
+          type="text"
+          aria-label="Filtrar por nombre"
+          placeholder="Buscar por nombre..."
+          value={textFilter}
+          onChange={(e) => setTextFilter(e.target.value)}
+        />
+
+        <button onClick={handleFilterClick}>Filtrar</button>
+        <button onClick={handleClearFilters}>Limpiar filtros</button>
+      </section>
+
+      {displayedItems.length === 0 ? (
+        <p
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            color: "#d35400",
+          }}
+        >
+          No hay recetas que coincidan con el filtro.
+        </p>
+      ) : (
+        <InfiniteScroll
+          dataLength={displayedItems.length}
+          next={fetchMoreData}
+          hasMore={true} // Siempre true para scroll infinito
+          loader={
+            <p style={{ textAlign: "center", color: "#d35400", fontWeight: "700" }}>
+              Cargando productos...
+            </p>
+          }
+        >
+          <main className="app-container">
+            {displayedItems.map((recipe, index) => (
+              <RecipeCard key={index} recipe={recipe} addToCart={handleAddToCart} />
+            ))}
+          </main>
+        </InfiniteScroll>
+      )}
     </>
   );
 }

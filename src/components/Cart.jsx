@@ -1,17 +1,23 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
+import { RequirementsContext } from "../context/RequirementsContext";
+
+const DELIVERY_COST = 10000;
 
 export default function Cart() {
-  const { cartItems, totalQuantity } = useContext(CartContext);
+  const { requirements } = useContext(RequirementsContext);
+  const { cartItems, totalQuantity, setCartItems } = useContext(CartContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
 
   // Calcula total sumando precio * cantidad
   const totalPrice = cartItems.reduce((sum, item) => {
-    // Quita símbolos, coma y puntos para convertir precio a número
     const priceNum = parseFloat(item.price.replace(/[^0-9.,]/g, "").replace(",", "."));
     return sum + (priceNum || 0) * item.quantity;
   }, 0);
+
+  // Total final con costo domicilio si aplica
+  const totalFinal = requirements.tipoEntrega === "domicilio" ? totalPrice + DELIVERY_COST : totalPrice;
 
   // Estado formulario pago
   const [formData, setFormData] = useState({
@@ -43,13 +49,33 @@ export default function Cart() {
     setIsPaying(false);
   };
 
+  // Botón limpiar carrito
+  const handleClearCart = () => {
+    setCartItems([]);
+  };
+
   // Envía formulario pago (simulación)
   const handlePaySubmit = (e) => {
     e.preventDefault();
-    alert(`Gracias ${formData.nombre}, su pago de $${totalPrice.toFixed(2)} ha sido procesado.`);
+
+    if (totalFinal > requirements.presupuesto) {
+      alert("El total supera tu presupuesto. Elimina algunos productos o ajusta el pedido.");
+      return;
+    }
+
+    // Aquí podrías validar formulario de pago con más detalle...
+
+    alert(`Gracias ${formData.nombre}, su pago de $${totalFinal.toFixed(2)} ha sido procesado.`);
     setIsPaying(false);
     setIsOpen(false);
-    // Aquí limpiar carrito si quieres
+    setCartItems([]); // Limpia carrito después de la compra
+    setFormData({
+      nombre: "",
+      direccion: "",
+      tarjeta: "",
+      fechaExp: "",
+      cvv: "",
+    });
   };
 
   return (
@@ -178,7 +204,7 @@ export default function Cart() {
             )}
           </div>
 
-          {/* Total centrado */}
+          {/* Total y costo domicilio */}
           <div
             style={{
               textAlign: "center",
@@ -189,11 +215,51 @@ export default function Cart() {
               userSelect: "none",
             }}
           >
-            Total a pagar: ${totalPrice.toFixed(2)}
+            Total productos: ${totalPrice.toFixed(2)}
+          </div>
+          {requirements.tipoEntrega === "domicilio" && (
+            <div
+              style={{
+                textAlign: "center",
+                fontWeight: 900,
+                fontSize: "1.2rem",
+                color: "#34495e",
+                marginBottom: 8,
+                userSelect: "none",
+              }}
+            >
+              Costo domicilio: ${DELIVERY_COST.toFixed(2)}
+            </div>
+          )}
+          <div
+            style={{
+              textAlign: "center",
+              fontWeight: 900,
+              fontSize: "1.6rem",
+              color: "#e74c3c",
+              marginBottom: 16,
+              userSelect: "none",
+            }}
+          >
+            Total a pagar: ${totalFinal.toFixed(2)}
           </div>
 
-          {/* Botón Pagar centrado */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          {/* Botones limpiar y pagar */}
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+            <button
+              onClick={handleClearCart}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#bdc3c7",
+                color: "#2c3e50",
+                border: "none",
+                cursor: "pointer",
+                borderRadius: 6,
+                fontWeight: "bold",
+              }}
+            >
+              Limpiar carrito
+            </button>
             <button
               onClick={handlePayClick}
               style={{
@@ -208,7 +274,6 @@ export default function Cart() {
                 minWidth: 160,
                 boxShadow: "0 4px 12px rgba(211, 84, 0, 0.6)",
                 transition: "background-color 0.3s ease",
-                userSelect: "none",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#b84300")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#d35400")}
