@@ -68,7 +68,13 @@ export default function Requirements() {
 
   return (
     <div className="requirements-container">
-      <h1>Requerimientos de compra</h1>
+      <header style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        <h1>Bienvenido a Sublime Food</h1>
+        <p className="subtitle">
+          Por favor, digita los requerimientos de tu compra para comenzar.
+        </p>
+      </header>
+
       <form onSubmit={handleSubmit} noValidate className="requirements-form">
         <label>
           Nombre:

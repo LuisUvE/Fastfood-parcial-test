@@ -13,7 +13,7 @@ const allRecipes = [
       "https://images.ctfassets.net/43ibah8kumsy/ea4c468f-30c4-4ad8-b56c-0b090d7ebf62/9d10ed4e561bef13baf0574a7114258a/5pastapennebarilla_upscaled.jpg?w=1600&h=1600&fm=webp&q=50",
     name: "Penne rigate con longaniza",
     weight: "420g",
-    price: "7.150",
+    price: "18000",
     calories: 865,
     fats: 59,
     carbs: 58,
@@ -25,7 +25,7 @@ const allRecipes = [
       "https://recetasdecocina.elmundo.es/wp-content/uploads/2021/03/IMG_20200321_150823.jpg",
     name: "Ensalada quinoa y aguacate",
     weight: "350g",
-    price: "6.500",
+    price: "15000",
     calories: 420,
     fats: 20,
     carbs: 45,
@@ -37,7 +37,7 @@ const allRecipes = [
       "https://recetasveganas.net/wp-content/uploads/2020/09/bowl-arroz-hummus-verdura-saludable-vegano-recetas.jpg",
     name: "Bowl vegano con hummus",
     weight: "400g",
-    price: "8.000",
+    price: "16000",
     calories: 520,
     fats: 22,
     carbs: 60,
@@ -49,7 +49,7 @@ const allRecipes = [
       "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80",
     name: "Sushi vegetariano",
     weight: "300g",
-    price: "9.200",
+    price: "22000",
     calories: 410,
     fats: 18,
     carbs: 50,
@@ -61,7 +61,7 @@ const allRecipes = [
       "https://www.demoslavueltaaldia.com/sites/default/files/956_polloverduras_g.png",
     name: "Pollo asado con hierbas",
     weight: "450g",
-    price: "10.000",
+    price: "20000",
     calories: 780,
     fats: 40,
     carbs: 15,
@@ -73,7 +73,7 @@ const allRecipes = [
       "https://theobjective.com/wp-content/uploads/2022/02/carbonara_1.jpg",
     name: "Pasta carbonara tradicional",
     weight: "400g",
-    price: "8.750",
+    price: "19000",
     calories: 890,
     fats: 55,
     carbs: 65,
@@ -85,7 +85,7 @@ const allRecipes = [
       "https://i0.wp.com/recetaskwa.com/wp-content/uploads/2023/09/ceviche_camaron.jpg?ssl=1",
     name: "Ceviche de camarón",
     weight: "350g",
-    price: "12.500",
+    price: "25000",
     calories: 350,
     fats: 10,
     carbs: 30,
@@ -97,20 +97,19 @@ const allRecipes = [
       "https://tienda.vegusta.cl/wp-content/uploads/2022/03/Dark-Side-Pin%CC%83a-Cuadrada-para-WEB.jpg",
     name: "Hamburguesa vegana",
     weight: "380g",
-    price: "9.300",
+    price: "17000",
     calories: 620,
     fats: 25,
     carbs: 70,
     proteins: 20,
     cuisine: "mexicana",
   },
-  // 7 productos adicionales:
   {
     image:
       "https://www.bekiacocina.com/images/cocina/0000/976-h.jpg",
     name: "Lasagna de verduras",
     weight: "500g",
-    price: "11.000",
+    price: "21000",
     calories: 700,
     fats: 30,
     carbs: 60,
@@ -122,7 +121,7 @@ const allRecipes = [
       "https://laroussecocina.mx/wp-content/uploads/2020/02/S050419-24-TACOS-VEGETARIANOS-0555-1.jpg.webp",
     name: "Tacos vegetarianos",
     weight: "300g",
-    price: "7.800",
+    price: "14000",
     calories: 480,
     fats: 18,
     carbs: 55,
@@ -134,7 +133,7 @@ const allRecipes = [
       "https://d36fw6y2wq3bat.cloudfront.net/recipes/sopa-de-miso-con-tofu-y-vegetales/900/sopa-de-miso-con-tofu-y-vegetales_version_1687406461.jpg",
     name: "Sopa miso",
     weight: "400g",
-    price: "6.200",
+    price: "13000",
     calories: 300,
     fats: 10,
     carbs: 40,
@@ -146,7 +145,7 @@ const allRecipes = [
       "https://imag.bonviveur.com/ensalada-cesar-casera.jpg",
     name: "Ensalada César",
     weight: "350g",
-    price: "7.100",
+    price: "15000",
     calories: 400,
     fats: 25,
     carbs: 35,
@@ -158,7 +157,7 @@ const allRecipes = [
       "https://fedecocina.net/static/aaa48f1f8a7e0773be2404e00d8fef08/a764f/pollo-teriyaki.jpg",
     name: "Pollo teriyaki",
     weight: "450g",
-    price: "12.000",
+    price: "22000",
     calories: 600,
     fats: 30,
     carbs: 50,
@@ -170,7 +169,7 @@ const allRecipes = [
       "https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg",
     name: "Pizza margarita",
     weight: "400g",
-    price: "9.000",
+    price: "20000",
     calories: 750,
     fats: 35,
     carbs: 80,
@@ -182,7 +181,7 @@ const allRecipes = [
       "https://okdiario.com/img/2018/04/23/makis-salmon.jpg",
     name: "Sushi de salmón",
     weight: "320g",
-    price: "13.000",
+    price: "28000",
     calories: 500,
     fats: 20,
     carbs: 55,
@@ -220,14 +219,18 @@ export default function Checkout() {
   }, [cuisineFilter, textFilter]);
 
   const fetchMoreData = () => {
-    const nextPage = page + 1;
-    const start = page * PAGE_SIZE;
-    const end = nextPage * PAGE_SIZE;
+    let nextPage = page + 1;
+    let start = page * PAGE_SIZE;
+    let end = nextPage * PAGE_SIZE;
+
     let nextItems = filteredRecipes.slice(start, end);
 
     if (nextItems.length === 0) {
-      // Cuando no haya más productos, repetir los primeros PAGE_SIZE para scroll infinito continuo
-      nextItems = filteredRecipes.slice(0, PAGE_SIZE);
+      // Reiniciamos para repetir recetas
+      start = 0;
+      end = PAGE_SIZE;
+      nextItems = filteredRecipes.slice(start, end);
+      nextPage = 1;
     }
 
     setDisplayedItems((prev) => [...prev, ...nextItems]);
@@ -236,11 +239,15 @@ export default function Checkout() {
 
   const handleAddToCart = (product) => {
     const totalCurrent = cartItems.reduce((sum, item) => {
-      const priceNum = parseFloat(item.price.replace(/[^0-9.,]/g, "").replace(",", "."));
+      const priceNum = parseFloat(
+        item.price.replace(/[^0-9.,]/g, "").replace(",", ".")
+      );
       return sum + (priceNum || 0) * item.quantity;
     }, 0);
 
-    const productPrice = parseFloat(product.price.replace(/[^0-9.,]/g, "").replace(",", "."));
+    const productPrice = parseFloat(
+      product.price.replace(/[^0-9.,]/g, "").replace(",", ".")
+    );
 
     if (totalCurrent + productPrice > requirements.presupuesto) {
       alert("No puedes agregar este producto porque supera tu presupuesto.");
@@ -250,7 +257,7 @@ export default function Checkout() {
   };
 
   const handleFilterClick = () => {
-    // No hace falta hacer nada, useEffect ya actualiza
+    // No hace falta hacer nada aquí porque el useEffect actualiza los filtros
   };
 
   const handleClearFilters = () => {
@@ -272,7 +279,7 @@ export default function Checkout() {
           userSelect: "none",
         }}
       >
-        RECETAS DE RESTAURANTE
+        SUBLIME FOOD RESTAURANT
       </h1>
 
       <section
@@ -323,16 +330,27 @@ export default function Checkout() {
         <InfiniteScroll
           dataLength={displayedItems.length}
           next={fetchMoreData}
-          hasMore={true} // Siempre true para scroll infinito
+          hasMore={true}
           loader={
-            <p style={{ textAlign: "center", color: "#d35400", fontWeight: "700" }}>
+            <p
+              style={{
+                textAlign: "center",
+                color: "#d35400",
+                fontWeight: "700",
+                marginTop: "1rem",
+              }}
+            >
               Cargando productos...
             </p>
           }
         >
           <main className="app-container">
             {displayedItems.map((recipe, index) => (
-              <RecipeCard key={index} recipe={recipe} addToCart={handleAddToCart} />
+              <RecipeCard
+                key={`${recipe.name}-${index}`}
+                recipe={recipe}
+                addToCart={handleAddToCart}
+              />
             ))}
           </main>
         </InfiniteScroll>

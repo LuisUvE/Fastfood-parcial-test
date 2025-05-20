@@ -63,8 +63,6 @@ export default function Cart() {
       return;
     }
 
-    // Aquí podrías validar formulario de pago con más detalle...
-
     alert(`Gracias ${formData.nombre}, su pago de $${totalFinal.toFixed(2)} ha sido procesado.`);
     setIsPaying(false);
     setIsOpen(false);
@@ -135,59 +133,28 @@ export default function Cart() {
       {/* Panel lateral carrito */}
       {isOpen && !isPaying && (
         <aside
-          style={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            width: 350,
-            height: "100%",
-            background: "#fff",
-            boxShadow: "-3px 0 10px rgba(0,0,0,0.2)",
-            padding: 20,
-            zIndex: 9999,
-            display: "flex",
-            flexDirection: "column",
-          }}
+          className="cart-aside"
           aria-label="Carrito de compras"
         >
           {/* Botón cerrar */}
           <button
             onClick={() => setIsOpen(false)}
-            style={{
-              alignSelf: "flex-end",
-              fontSize: "1.5rem",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
+            className="cart-close-btn"
             aria-label="Cerrar carrito"
           >
             &times;
           </button>
 
-          <h2>Tu carrito</h2>
+          <h2 className="cart-title">Tu carrito</h2>
 
           {/* Lista scrollable */}
-          <div
-            style={{
-              flexGrow: 1,
-              overflowY: "auto",
-              marginBottom: 12,
-            }}
-          >
+          <div className="cart-list-container" style={{ flexGrow: 1, overflowY: "auto", marginBottom: 12 }}>
             {cartItems.length === 0 ? (
               <p>Tu carrito está vacío.</p>
             ) : (
-              <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+              <ul className="cart-list">
                 {cartItems.map((item, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      marginBottom: 10,
-                      borderBottom: "1px solid #ddd",
-                      paddingBottom: 10,
-                    }}
-                  >
+                  <li key={i}>
                     <strong>{item.name}</strong>
                     <div>Cantidad: {item.quantity}</div>
                     <div>Precio unitario: ${item.price}</div>
@@ -204,81 +171,20 @@ export default function Cart() {
             )}
           </div>
 
-          {/* Total y costo domicilio */}
-          <div
-            style={{
-              textAlign: "center",
-              fontWeight: 900,
-              fontSize: "1.4rem",
-              color: "#d35400",
-              marginBottom: 8,
-              userSelect: "none",
-            }}
-          >
-            Total productos: ${totalPrice.toFixed(2)}
-          </div>
+          {/* Totales */}
+          <div className="cart-total">Total productos: ${totalPrice.toFixed(2)}</div>
           {requirements.tipoEntrega === "domicilio" && (
-            <div
-              style={{
-                textAlign: "center",
-                fontWeight: 900,
-                fontSize: "1.2rem",
-                color: "#34495e",
-                marginBottom: 8,
-                userSelect: "none",
-              }}
-            >
-              Costo domicilio: ${DELIVERY_COST.toFixed(2)}
-            </div>
+            <div className="cart-delivery-cost">Costo domicilio: ${DELIVERY_COST.toFixed(2)}</div>
           )}
-          <div
-            style={{
-              textAlign: "center",
-              fontWeight: 900,
-              fontSize: "1.6rem",
-              color: "#e74c3c",
-              marginBottom: 16,
-              userSelect: "none",
-            }}
-          >
-            Total a pagar: ${totalFinal.toFixed(2)}
-          </div>
+          <div className="cart-final-total">Total a pagar: ${totalFinal.toFixed(2)}</div>
 
-          {/* Botones limpiar y pagar */}
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-            <button
-              onClick={handleClearCart}
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#bdc3c7",
-                color: "#2c3e50",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: 6,
-                fontWeight: "bold",
-              }}
-            >
-              Limpiar carrito
-            </button>
-            <button
-              onClick={handlePayClick}
-              style={{
-                padding: "12px 30px",
-                backgroundColor: "#d35400",
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: 30,
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-                minWidth: 160,
-                boxShadow: "0 4px 12px rgba(211, 84, 0, 0.6)",
-                transition: "background-color 0.3s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#b84300")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#d35400")}
-            >
+          {/* Botones pagar y limpiar */}
+          <div className="cart-buttons" style={{ marginBottom: 12 }}>
+            <button className="cart-pay-btn cart-button" onClick={handlePayClick}>
               Pagar
+            </button>
+            <button className="cart-clear-btn cart-button" onClick={handleClearCart}>
+              Limpiar carrito
             </button>
           </div>
         </aside>
@@ -287,42 +193,21 @@ export default function Cart() {
       {/* Panel formulario pago */}
       {isOpen && isPaying && (
         <aside
-          style={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            width: 350,
-            height: "100%",
-            background: "#fff",
-            boxShadow: "-3px 0 10px rgba(0,0,0,0.2)",
-            padding: 20,
-            zIndex: 9999,
-            display: "flex",
-            flexDirection: "column",
-          }}
+          className="cart-aside"
           aria-label="Formulario de pago"
         >
           {/* Botón volver */}
           <button
             onClick={handleCancelPayment}
-            style={{
-              alignSelf: "flex-end",
-              fontSize: "1.5rem",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
+            className="payment-close-btn"
             aria-label="Volver al carrito"
           >
             &times;
           </button>
 
-          <h2>Formulario de pago</h2>
+          <h2 className="payment-title">Formulario de pago</h2>
 
-          <form
-            onSubmit={handlePaySubmit}
-            style={{ display: "flex", flexDirection: "column", gap: 10 }}
-          >
+          <form onSubmit={handlePaySubmit} className="payment-form">
             <label>
               Nombre completo:
               <input
@@ -332,7 +217,6 @@ export default function Cart() {
                 onChange={handleInputChange}
                 required
                 placeholder="Tu nombre completo"
-                style={{ width: "100%", padding: 6 }}
               />
             </label>
             <label>
@@ -344,7 +228,6 @@ export default function Cart() {
                 onChange={handleInputChange}
                 required
                 placeholder="Dirección de envío"
-                style={{ width: "100%", padding: 6 }}
               />
             </label>
             <label>
@@ -357,7 +240,6 @@ export default function Cart() {
                 required
                 placeholder="Número de tarjeta"
                 maxLength={19}
-                style={{ width: "100%", padding: 6 }}
                 pattern="\d{13,19}"
                 title="Número de tarjeta válido"
               />
@@ -372,7 +254,6 @@ export default function Cart() {
                 required
                 placeholder="MM/AA"
                 maxLength={5}
-                style={{ width: "100%", padding: 6 }}
                 pattern="^(0[1-9]|1[0-2])\/\d{2}$"
                 title="Formato MM/AA"
               />
@@ -387,25 +268,11 @@ export default function Cart() {
                 required
                 placeholder="Código CVV"
                 maxLength={4}
-                style={{ width: "100%", padding: 6 }}
                 pattern="\d{3,4}"
                 title="3 o 4 dígitos CVV"
               />
             </label>
-            <button
-              type="submit"
-              style={{
-                padding: 10,
-                backgroundColor: "#d35400",
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: 6,
-                fontWeight: "bold",
-                fontSize: "1.1rem",
-                userSelect: "none",
-              }}
-            >
+            <button type="submit" className="payment-submit-btn">
               Confirmar pago
             </button>
           </form>
